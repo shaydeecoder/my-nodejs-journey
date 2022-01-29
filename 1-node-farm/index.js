@@ -1,5 +1,6 @@
 // Require File System Module
 const fs = require("fs");
+const http = require("http");
 
 /////////////////////////////////////////
 // FILES
@@ -30,3 +31,17 @@ const fs = require("fs");
 //   });
 // });
 // console.log("Will read file!");
+
+/////////////////////////////////////////
+// SERVER
+
+// Create a server
+const server = http.createServer((req, res) => {
+  // Send response to client-side
+  res.end("Hello from the server!");
+});
+
+// Listen to a server
+server.listen(8000, "127.0.0.1", () => {
+  console.log("Listening to requests on port 8000");
+});

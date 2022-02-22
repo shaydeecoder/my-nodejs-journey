@@ -8,4 +8,8 @@ console.log(calc1.add(2, 5));
 
 // exports
 const calc2 = require('./text-module-2');
-console.log(calc2.multiple(2, 5));
+console.log(calc2.multiply(2, 5));
+
+// Destructuring exports
+const { multiply } = require('./text-module-2');
+console.log(multiply(2, 5));

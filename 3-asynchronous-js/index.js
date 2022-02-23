@@ -30,11 +30,10 @@ readFilePro(`${__dirname}/dog.txt`)
   })
   .then((res) => {
     console.log(res.body.message);
-
-    fs.writeFile('dog-img.txt', res.body.message, (err) => {
-      if (err) return console.log(err.message);
-      console.log('Random dog image saved to file!');
-    });
+    return writeFilePro('dog-img.txt', res.body.message);
+  })
+  .then(() => {
+    console.log('Random dog image saved to file!');
   })
   .catch((err) => {
     console.log(err.message);

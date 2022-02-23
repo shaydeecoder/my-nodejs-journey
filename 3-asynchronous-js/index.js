@@ -11,6 +11,16 @@ const readFilePro = (file) => {
   });
 };
 
+// Promisifying writeFile
+const writeFilePro = (file, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, (err) => {
+      if (err) reject(`Couldn't write that file 🙁`);
+      resolve('success');
+    });
+  });
+};
+
 // Consuming the promise with then
 readFilePro(`${__dirname}/dog.txt`).then((data) => {
   console.log(`Breed: ${data}`);

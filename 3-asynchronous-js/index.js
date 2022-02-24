@@ -65,7 +65,7 @@ const getDogPic = async () => {
 })();
 
 // Getting a returned value from async await using then
-console.log('1: Will get dog pics!');
+/* console.log('1: Will get dog pics!');
 getDogPic()
   .then((x) => {
     console.log(x);
@@ -73,7 +73,7 @@ getDogPic()
   })
   .catch((err) => {
     console.log('ERROR 💥');
-  });
+  }); */
 
 // Consuming the promise with then
 /* readFilePro(`${__dirname}/dog.txt`)

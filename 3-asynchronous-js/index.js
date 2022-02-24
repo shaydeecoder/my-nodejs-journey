@@ -21,8 +21,23 @@ const writeFilePro = (file, data) => {
   });
 };
 
+// Consuming the promise with async await
+const getDogPic = async () => {
+  const data = await readFilePro(`${__dirname}/dog.txt`);
+  console.log(`Breed: ${data}`);
+
+  const res = await superagent.get(
+    `https://dog.ceo/api/breed/${data}/images/random`
+  );
+  console.log(res.body.message);
+
+  await writeFilePro('dog-img.txt', res.body.message);
+  console.log('Random dog image saved to file!');
+};
+getDogPic();
+
 // Consuming the promise with then
-readFilePro(`${__dirname}/dog.txt`)
+/* readFilePro(`${__dirname}/dog.txt`)
   .then((data) => {
     console.log(`Breed: ${data}`);
 
@@ -37,7 +52,7 @@ readFilePro(`${__dirname}/dog.txt`)
   })
   .catch((err) => {
     console.log(err.message);
-  });
+  }); */
 
 /* fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
   console.log(`Breed: ${data}`);

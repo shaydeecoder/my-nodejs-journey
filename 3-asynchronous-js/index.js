@@ -42,6 +42,18 @@ const getDogPic = async () => {
   return '2: READY 🐶';
 };
 
+// Getting a returned value from async await using an IIFE
+(async () => {
+  try {
+    console.log('!: Will get dog pics!');
+    const x = await getDogPic();
+    console.log(x);
+    console.log('3: Done getting dog pics!');
+  } catch (err) {
+    console.log('ERROR 💥');
+  }
+})();
+
 // Getting a returned value from async await using then
 console.log('1: Will get dog pics!');
 getDogPic()

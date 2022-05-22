@@ -31,5 +31,5 @@ app.get('/about-us', (req, res) => {
 
 // 404 page
 app.use((req, res) => {
-  res.status(404).sendFile('./views/404.html', { root: __dirname });
+  res.status(404).render('404');
 });

@@ -12,12 +12,16 @@ app.listen(3000);
 // routing with express
 app.get('/', (req, res) => {
   // res.send('<p>home page</p>');
-  res.sendFile('./views/index.html', { root: __dirname });
+  // res.sendFile('./views/index.html', { root: __dirname });
+
+  // render view
+  res.render('index');
 });
 
 app.get('/about', (req, res) => {
   // res.send('<p>home page</p>');
-  res.sendFile('./views/about.html', { root: __dirname });
+  // res.sendFile('./views/about.html', { root: __dirname });
+  res.render('about');
 });
 
 // redirects

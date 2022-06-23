@@ -65,6 +65,16 @@ app.get('/all-blogs', (req, res) => {
     });
 });
 
+app.get('/single-blog', (req, res) => {
+  Blog.findById('62b42205d247522bbfb3c7ef')
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // routing with express
 app.get('/', (req, res) => {
   // res.send('<p>home page</p>');

@@ -6,13 +6,17 @@
     <%- include('./partials/nav.ejs') %>
 
     <div class="create-blog content">
-      <form>
+      <form action="/blogs" method="POST">
         <label for="title">Blog title:</label>
-        <input type="text" name="title" id="title" required />
+        <input type="text" name="title" id="title" name="title" required />
+
         <label for="snippet">Blog snippet:</label>
-        <input type="text" name="snippet" id="snippet" required />
+        <!-- prettier-ignore -->
+        <input type="text" name="snippet" id="snippet" name="snippet" required />
+
         <label for="title">Blog title:</label>
-        <textarea name="body" id="body" required></textarea>
+        <textarea name="body" id="body" name="body" required></textarea>
+
         <button>Submit</button>
       </form>
     </div>

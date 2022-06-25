@@ -11,10 +11,11 @@
       <% if (blogs.length > 0) { %>
         <% blogs.forEach(blog => { %>
 
-      <!-- prettier-ignore -->
-      <h3 class="title"><%= blog.title %></h3>
-      <p class="snippet"><%= blog.snippet %></p>
-
+      <a class="single" href="/blogs/<%= blog._id %>">
+        <!-- prettier-ignore -->
+        <h3 class="title"><%= blog.title %></h3>
+        <p class="snippet"><%= blog.snippet %></p>
+      </a>
       <!-- prettier-ignore -->
       <% }) %>
       <% } else { %>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('./partials/head.ejs') %>
+  <%- include('../partials/head.ejs') %>
 
   <body>
-    <%- include('./partials/nav.ejs') %>
+    <%- include('../partials/nav.ejs') %>
 
     <div class="details content">
       <h2><%= blog.title %></h2>
@@ -14,7 +14,7 @@
     </div>
 
     <!-- prettier-ignore -->
-    <%- include('./partials/footer.ejs') %>
+    <%- include('../partials/footer.ejs') %>
 
     <script>
       const trashcan = document.querySelector('a.delete');

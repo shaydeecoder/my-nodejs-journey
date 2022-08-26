@@ -2,12 +2,11 @@ const mongoose = require('mongoose');
 const static = require('node-static');
 const http = require('http');
 const fs = require('fs');
+const controller = require('./controllers');
+require('dotenv').config();
 
 // static file server
 const fileServer = new static.Server(`${__dirname}/public`);
-
-//  db URI
-const dbURI = 'nonsense';
 
 const server = http.createServer((req, res) => {
   // serve static files
@@ -37,31 +36,31 @@ const server = http.createServer((req, res) => {
       });
     }
 
-    console.log('event', e);
-    console.log('response', response);
-
-    // API Routes
+    /* API Endpoints */
     // /api/todos : GET
     if (url === '/todos' && method === 'GET') {
-      console.log('Fetching all todos...');
+      controller.get_todos(req, res);
     }
 
+    // /api/todos/:id : GET
     if (url === '/todos/:id' && method === 'GET') {
       console.log('Fetching selected todo...');
     }
 
+    // /api/todos : POST
     if (url === '/todos' && method === 'POST') {
       console.log('Posting new todo...');
     }
 
-    if (url === 'todos/:id' && method === 'PATCH') {
+    // /api/todos/:id : DELETE
+    if (url === 'todos/:id' && method === 'DELETE') {
       console.log('Deleting selected todo...');
     }
   });
 });
 
 mongoose
-  .connect(dbURI)
+  .connect(process.env.dbURI)
   .then((res) => {
     // listen for requests
     server.listen(3000, 'localhost', () => {

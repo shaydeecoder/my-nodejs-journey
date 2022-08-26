@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/shaydeecoder/my-nodejs-journey/tree/01-todo#readme",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "mongoose": "^6.4.6",
     "node-static": "^0.7.11"

@@ -42,7 +42,7 @@ const remove_todo = async (req, res) => {
   try {
     const id = req.url.split('/')[3];
 
-    const todo = await Blog.findByIdAndDelete(id);
+    const todo = await Todo.findByIdAndDelete(id);
     const data = {
       data: todo,
       message: 'Todo successfully deleted',

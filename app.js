@@ -38,23 +38,27 @@ const server = http.createServer((req, res) => {
 
     /* API Endpoints */
     // /api/todos : GET
-    if (url === '/todos' && method === 'GET') {
+    if (url === '/api/todos' && method === 'GET') {
       controller.get_todos(req, res);
     }
 
-    // /api/todos/:id : GET
-    if (url === '/todos/:id' && method === 'GET') {
+    // /api/todos/:id : PATCH
+    if (url === '/api/todos/:id' && method === 'PATCH') {
       console.log('Fetching selected todo...');
     }
 
-    // /api/todos : POST
-    if (url === '/todos' && method === 'POST') {
-      console.log('Posting new todo...');
+    // /api/todo : POST
+    if (url === '/api/todo' && method === 'POST') {
+      controller.post_todo(req, res);
     }
 
     // /api/todos/:id : DELETE
-    if (url === 'todos/:id' && method === 'DELETE') {
-      console.log('Deleting selected todo...');
+    /* if (url === '/api/todos/:id' && method === 'DELETE') {
+      controller.remove_todo(req, res);
+    } */
+
+    if (url.match(/\/api\/todos\/([a-z A-Z 0-9]+)/) && method === 'DELETE') {
+      controller.remove_todo(req, res);
     }
   });
 });

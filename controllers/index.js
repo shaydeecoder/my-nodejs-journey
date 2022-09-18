@@ -33,7 +33,14 @@ const post_todo = (req, res) => {
         'Content-Type': 'application/json',
       });
     } catch (err) {
-      console.log(err);
+      const data = {
+        message: 'Oops! Todo was unable to be added, please try again!',
+        success: false,
+      };
+
+      sendResponse(res, data, 404, {
+        'Content-Type': 'application/json',
+      });
     }
   });
 };
@@ -53,7 +60,7 @@ const remove_todo = async (req, res) => {
       'Content-Type': 'application/json',
     });
   } catch (err) {
-    const data = { data: '', message: 'Todo does not exist!', success: false };
+    const data = { message: 'Todo does not exist!', success: false };
 
     sendResponse(res, data, 404, {
       'Content-Type': 'application/json',
@@ -61,12 +68,37 @@ const remove_todo = async (req, res) => {
   }
 };
 
-const check_todo = async () => {
-  try {
-    console.log('Checking selected todo...');
-  } catch (err) {
-    console.log(err);
-  }
+const update_todo = (req, res) => {
+  collectData(req, async (updatedData) => {
+    try {
+      const id = req.url.split('/')[3];
+      const todo = await Todo.findOneAndUpdate({ _id: id }, updatedData, {
+        new: true,
+        upsert: false, // Don't make this update into an upsert
+      });
+
+      const data = {
+        data: todo,
+        message: 'Congratulations on completing this task!',
+        success: true,
+      };
+
+      sendResponse(res, data, 200, {
+        'Content-Type': 'application/json',
+      });
+    } catch (err) {
+      console.log(err);
+
+      const data = {
+        message: 'Failed to mark todo, please try again!',
+        success: false,
+      };
+
+      sendResponse(res, data, 404, {
+        'Content-Type': 'application/json',
+      });
+    }
+  });
 };
 
-module.exports = { get_todos, post_todo, remove_todo, check_todo };
+module.exports = { get_todos, post_todo, remove_todo, update_todo };

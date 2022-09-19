@@ -36,16 +36,10 @@ const server = http.createServer((req, res) => {
       });
     }
 
-    // 630877c0f9fc68bd290e96f1
     /* API Endpoints */
     // /api/todos : GET
     if (url === '/api/todos' && method === 'GET') {
       controller.get_todos(req, res);
-    }
-
-    // /api/todos/:id : PATCH
-    if (url.match(/\/api\/todos\/([a-z A-Z 0-9]+)/) && method === 'PATCH') {
-      controller.update_todo(req, res);
     }
 
     // /api/todo : POST
@@ -53,8 +47,14 @@ const server = http.createServer((req, res) => {
       controller.post_todo(req, res);
     }
 
-    if (url.match(/\/api\/todos\/([a-z A-Z 0-9]+)/) && method === 'DELETE') {
-      controller.remove_todo(req, res);
+    // /api/todos/:id : PATCH
+    if (url.match(/\/api\/todo\/([a-z A-Z 0-9]+)/) && method === 'PATCH') {
+      controller.update_todo(req, res);
+    }
+
+    // /api/todo /:id DELETE
+    if (url.match(/\/api\/todo\/([a-z A-Z 0-9]+)/) && method === 'DELETE') {
+      controller.delete_todo(req, res);
     }
   });
 });

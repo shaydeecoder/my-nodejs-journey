@@ -1,17 +1,17 @@
-"use strict";
+'use strict';
 
-const btnAddTodo = document.querySelector(".todo__btn--add");
-const btnClearAll = document.querySelector(".btn--clear-all");
-const labelActiveTodo = document.querySelector(".todo__count--active");
-const labelDate = document.querySelector(".time__date--numeric");
-const labelYear = document.querySelector(".time__date--month_year");
-const labelDay = document.querySelector(".time__date--day");
-const todoItemsContainer = document.querySelector(".todo__items");
-const containerItems = document.querySelector(".todo__items");
+const btnAddTodo = document.querySelector('.todo__btn--add');
+const btnClearAll = document.querySelector('.btn--clear-all');
+const labelActiveTodo = document.querySelector('.todo__count--active');
+const labelDate = document.querySelector('.time__date--numeric');
+const labelYear = document.querySelector('.time__date--month_year');
+const labelDay = document.querySelector('.time__date--day');
+const todoItemsContainer = document.querySelector('.todo__items');
+const containerItems = document.querySelector('.todo__items');
 
 class Todo {
   constructor(id, item) {
-    this.id = id;
+    this.todo_id = id;
     this.item = item;
     this.checked = false;
   }
@@ -29,14 +29,14 @@ class App {
     // Display date on UI
     this._setDate();
 
-    // Get todo itmes from local storage if available
-    this._getLocalStorage();
+    // Get todo items from db if available
+    this.getTodos();
 
     // Attach event listeners
-    btnAddTodo.addEventListener("click", this._newTodo.bind(this));
-    btnClearAll.addEventListener("click", this._clearAll.bind(this));
-    containerItems.addEventListener("change", this._checkStatus.bind(this));
-    containerItems.addEventListener("click", this._removeItem.bind(this));
+    btnAddTodo.addEventListener('click', this._newTodo.bind(this));
+    btnClearAll.addEventListener('click', this._clearAll.bind(this));
+    containerItems.addEventListener('change', this._checkStatus.bind(this));
+    containerItems.addEventListener('click', this._removeItem.bind(this));
   }
 
   _setDate() {
@@ -55,104 +55,151 @@ class App {
     labelDay.textContent = days[currentDate.getDay()];
   }
 
-  _newTodo(e) {
+  async _newTodo(e) {
     e.preventDefault();
 
     // get todo item from prompt
     const item = prompt(`Enter your todo here`);
 
     // Empty field if only spaces are inputed and display error msg
-    if (!item.trim()) return alert("Please enter a valid todo item!");
+    if (!item.trim()) return alert('Please enter a valid todo item!');
 
-    this.#id = this.#items.length;
+    this.#id = this.#items.length + 1;
 
     // create todo object with prompt's value
     this.#todo = new Todo(this.#id, item);
 
-    // store object in an array
-    this.#items.push(this.#todo);
+    console.log('new todo:', this.#todo);
 
-    // render item on UI
-    this._renderItem(this.#todo);
-
-    // Add todo items to local storage
-    this._setLocalStorage(this.#items);
+    // Save new todo and update UI
+    await this.saveTodo(this.#todo);
+    await this.getTodos();
   }
 
-  _renderItem(obj) {
+  async getTodos() {
+    const headersList = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    };
+
+    const response = await fetch('http://localhost:3000/api/todos', {
+      method: 'GET',
+      headers: headersList,
+    });
+
+    const { data } = await response.json();
+    this.#items = data;
+
+    // Update the UI
+    this._updateUI(this.#items);
+  }
+
+  async saveTodo({ todo_id, item, checked }) {
+    const headersList = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    };
+
+    const bodyContent = JSON.stringify({
+      todo_id,
+      item,
+      checked,
+    });
+
+    await fetch('http://localhost:3000/api/todo', {
+      method: 'POST',
+      body: bodyContent,
+      headers: headersList,
+    });
+  }
+
+  async markTodo(id, checked) {
+    const headersList = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    };
+
+    const bodyContent = JSON.stringify({
+      checked,
+    });
+
+    await fetch(`http://localhost:3000/api/todo/${id}`, {
+      method: 'PATCH',
+      body: bodyContent,
+      headers: headersList,
+    });
+  }
+
+  async deleteTodo(id) {
+    const headersList = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    };
+
+    await fetch(`http://localhost:3000/api/todo/${id}`, {
+      method: 'DELETE',
+      headers: headersList,
+    });
+  }
+
+  _renderItem(todo) {
     const html = `
       <li class="todo__item">
         <input type="checkbox" name="todo__check-btn" id="item-${
-          obj.id
-        }" class="todo__select" ${obj.checked ? "checked" : ""}>
-        <label for="item-${obj.id}">${obj.item}</label>
+          todo.todo_id
+        }" class="todo__select" ${todo.checked ? 'checked' : ''}>
+        <label for="item-${todo.todo_id}">${todo.item}</label>
         <i class="far fa-trash-alt todo__delete"></i>
       </li>
     `;
 
-    todoItemsContainer.insertAdjacentHTML("beforeend", html);
+    todoItemsContainer.insertAdjacentHTML('beforeend', html);
   }
 
-  _setLocalStorage(arr) {
-    localStorage.setItem("todoItems", JSON.stringify(arr));
+  _updateUI(arr) {
+    arr.forEach((currentEl) => this._renderItem(currentEl));
   }
 
-  _getLocalStorage() {
-    const todos = JSON.parse(localStorage.getItem("todoItems"));
-    if (!todos) return;
-    this.#items = todos;
-
-    // Update the UI
-    this.#items.forEach((item) => {
-      this._renderItem(item);
-    });
+  _findTodoById(id) {
+    return this.#items.find((currentTodo) => currentTodo.todo_id === id);
   }
 
-  _updateLocalStorage(arr) {
-    localStorage.clear();
-    this._setLocalStorage(arr);
-  }
-
-  _checkStatus(e) {
-    const target = e.target.closest(".todo__select");
-    const targetID = Number(target.getAttribute("id").split("-")[1]);
+  async _checkStatus(e) {
+    const target = e.target.closest('.todo__select');
+    const targetID = target.getAttribute('id').split('-')[1];
 
     // Find target object in #items array
-    const targetObj = this._findItemsID(targetID);
+    const targettedTodo = this._findTodoById(targetID);
 
     // if target is checked, set property "checked" to true else to false
-    targetObj.checked = target.checked ? true : false;
+    await this.markTodo(targettedTodo._id, !targettedTodo.checked);
 
-    // Update local storage with updated #items array
-    this._updateLocalStorage(this.#items);
+    // Update UI with latest todo record
+    await this.getTodos();
   }
 
-  _removeItem(e) {
-    const target = e.target.closest(".todo__delete");
+  async _removeItem(e) {
+    const target = e.target.closest('.todo__delete');
 
     if (!target) return;
 
-    const targetItem = target.closest(".todo__item");
+    const targetItem = target.closest('.todo__item');
 
     // Remove item from UI
-    targetItem.classList.add("todo__items--remove");
+    targetItem.classList.add('todo__items--remove');
 
     // Get target ID
     const targetInputID = targetItem
-      .querySelector(".todo__select")
-      .getAttribute("id")
-      .split("-")[1];
+      .querySelector('.todo__select')
+      .getAttribute('id')
+      .split('-')[1];
 
     // Find and remove item from #items array
-    const targetObj = this._findItemsID(Number(targetInputID));
+    const targetObj = this._findTodoById(targetInputID);
     this.#items = this.#items.filter((item) => item !== targetObj);
 
-    // Update local storage
-    this._updateLocalStorage(this.#items);
-  }
-
-  _findItemsID(id) {
-    return this.#items.find((item) => item.id === id);
+    // Update UI with latest todo record
+    await this.getTodos();
   }
 
   _clearAll() {
@@ -160,7 +207,7 @@ class App {
     this.#items = [];
 
     // Delete todo items from UI
-    containerItems.textContent = "";
+    containerItems.textContent = '';
 
     // Clear local storage
     localStorage.clear();

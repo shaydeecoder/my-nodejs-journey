@@ -33,6 +33,8 @@ const post_todo = (req, res) => {
         'Content-Type': 'application/json',
       });
     } catch (err) {
+      console.log(err);
+
       const data = {
         message: 'Oops! Todo was unable to be added, please try again!',
         success: false,
@@ -45,7 +47,7 @@ const post_todo = (req, res) => {
   });
 };
 
-const remove_todo = async (req, res) => {
+const delete_todo = async (req, res) => {
   try {
     const id = req.url.split('/')[3];
 
@@ -60,6 +62,8 @@ const remove_todo = async (req, res) => {
       'Content-Type': 'application/json',
     });
   } catch (err) {
+    console.log(err);
+
     const data = { message: 'Todo does not exist!', success: false };
 
     sendResponse(res, data, 404, {
@@ -101,4 +105,4 @@ const update_todo = (req, res) => {
   });
 };
 
-module.exports = { get_todos, post_todo, remove_todo, update_todo };
+module.exports = { get_todos, post_todo, delete_todo, update_todo };

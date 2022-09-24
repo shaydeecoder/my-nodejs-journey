@@ -142,6 +142,18 @@ class App {
     });
   }
 
+  async deleteAllTodo() {
+    const headersList = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    };
+
+    await fetch(`http://localhost:3000/api/todos`, {
+      method: 'DELETE',
+      headers: headersList,
+    });
+  }
+
   _renderItem(todo) {
     const html = `
       <li class="todo__item">
@@ -204,15 +216,12 @@ class App {
     await this.getTodos();
   }
 
-  _clearAll() {
-    // Empty #items array
-    this.#items = [];
+  async _clearAll() {
+    // Delete all todos from db
+    await this.deleteAllTodo();
 
-    // Delete todo items from UI
-    containerItems.textContent = '';
-
-    // Clear local storage
-    localStorage.clear();
+    // Update UI with latest todo record
+    await this.getTodos();
   }
 }
 

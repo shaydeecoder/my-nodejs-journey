@@ -52,9 +52,14 @@ const server = http.createServer((req, res) => {
       controller.update_todo(req, res);
     }
 
-    // /api/todo /:id DELETE
+    // /api/todo/:id DELETE
     if (url.match(/\/api\/todo\/([a-z A-Z 0-9]+)/) && method === 'DELETE') {
       controller.delete_todo(req, res);
+    }
+
+    // /api/todos : DELETE
+    if (url === '/api/todos' && method === 'DELETE') {
+      controller.delete_all_todo(req, res);
     }
   });
 });

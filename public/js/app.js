@@ -194,9 +194,11 @@ class App {
       .getAttribute('id')
       .split('-')[1];
 
-    // Find and remove item from #items array
-    const targetObj = this._findTodoById(targetInputID);
-    this.#items = this.#items.filter((item) => item !== targetObj);
+    // Find todo by id
+    const targettedTodo = this._findTodoById(targetInputID);
+
+    // Delete todo
+    await this.deleteTodo(targettedTodo._id);
 
     // Update UI with latest todo record
     await this.getTodos();

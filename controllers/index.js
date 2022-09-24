@@ -40,7 +40,7 @@ const post_todo = (req, res) => {
         success: false,
       };
 
-      sendResponse(res, data, 404, {
+      sendResponse(res, data, 400, {
         'Content-Type': 'application/json',
       });
     }
@@ -67,6 +67,32 @@ const delete_todo = async (req, res) => {
     const data = { message: 'Todo does not exist!', success: false };
 
     sendResponse(res, data, 404, {
+      'Content-Type': 'application/json',
+    });
+  }
+};
+
+const delete_all_todo = async (req, res) => {
+  try {
+    const todo = await Todo.deleteMany({});
+    const data = {
+      data: todo,
+      message: 'All todos successfully deleted',
+      success: true,
+    };
+
+    sendResponse(res, data, 200, {
+      'Content-Type': 'application/json',
+    });
+  } catch (err) {
+    console.log(err);
+
+    const data = {
+      message: 'An error occured, please try again!',
+      success: false,
+    };
+
+    sendResponse(res, data, 400, {
       'Content-Type': 'application/json',
     });
   }
@@ -105,4 +131,10 @@ const update_todo = (req, res) => {
   });
 };
 
-module.exports = { get_todos, post_todo, delete_todo, update_todo };
+module.exports = {
+  get_todos,
+  post_todo,
+  delete_todo,
+  delete_all_todo,
+  update_todo,
+};

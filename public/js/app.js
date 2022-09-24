@@ -15,66 +15,6 @@ class Todo {
     this.item = item;
     this.checked = false;
   }
-}
-
-/////////////////////////////////////////////
-// App Achitecture
-
-class App {
-  #id;
-  #items = [];
-  #todo;
-
-  constructor() {
-    // Display date on UI
-    this._setDate();
-
-    // Get todo items from db if available
-    this.getTodos();
-
-    // Attach event listeners
-    btnAddTodo.addEventListener('click', this._newTodo.bind(this));
-    btnClearAll.addEventListener('click', this._clearAll.bind(this));
-    containerItems.addEventListener('change', this._checkStatus.bind(this));
-    containerItems.addEventListener('click', this._removeItem.bind(this));
-  }
-
-  _setDate() {
-    // prettier-ignore
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-    // prettier-ignore
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    const currentDate = new Date();
-
-    labelDate.textContent = currentDate.getDate();
-    labelDay.textContent = `${months[currentDate.getMonth()]} ${
-      currentDate.getFullYear
-    }`;
-    labelDay.textContent = days[currentDate.getDay()];
-  }
-
-  async _newTodo(e) {
-    e.preventDefault();
-
-    // get todo item from prompt
-    const item = prompt(`Enter your todo here`);
-
-    // Empty field if only spaces are inputed and display error msg
-    if (!item.trim()) return alert('Please enter a valid todo item!');
-
-    this.#id = this.#items.length + 1;
-
-    // create todo object with prompt's value
-    this.#todo = new Todo(this.#id, item);
-
-    console.log('new todo:', this.#todo);
-
-    // Save new todo and update UI
-    await this.saveTodo(this.#todo);
-    await this.getTodos();
-  }
 
   async getTodos() {
     const headersList = {
@@ -88,10 +28,8 @@ class App {
     });
 
     const { data } = await response.json();
-    this.#items = data;
 
-    // Update the UI
-    this._updateUI(this.#items);
+    return data;
   }
 
   async saveTodo({ todo_id, item, checked }) {
@@ -153,6 +91,75 @@ class App {
       headers: headersList,
     });
   }
+}
+
+/////////////////////////////////////////////
+// App Achitecture
+
+class App extends Todo {
+  #id;
+  #todo;
+  #items = [];
+
+  constructor() {
+    super();
+
+    // Display date on UI
+    this._setDate();
+
+    // Get todo #items from db if available
+    this.getTodos().then((res) => {
+      this.#items = res;
+      // Update UI after getting the #items
+      this._updateUI(this.#items);
+    });
+
+    // Attach event listeners
+    btnAddTodo.addEventListener('click', this._newTodo.bind(this));
+    btnClearAll.addEventListener('click', this._clearAll.bind(this));
+    containerItems.addEventListener('change', this._checkStatus.bind(this));
+    containerItems.addEventListener('click', this._removeItem.bind(this));
+  }
+
+  _setDate() {
+    // prettier-ignore
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // prettier-ignore
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const currentDate = new Date();
+
+    labelDate.textContent = currentDate.getDate();
+    labelDay.textContent = `${months[currentDate.getMonth()]} ${
+      currentDate.getFullYear
+    }`;
+    labelDay.textContent = days[currentDate.getDay()];
+  }
+
+  async _newTodo(e) {
+    e.preventDefault();
+
+    // get todo item from prompt
+    const item = prompt(`Enter your todo here`);
+
+    // Empty field if only spaces are inputed and display error msg
+    if (!item.trim()) return alert('Please enter a valid todo item!');
+
+    this.#id = this.#items.length + 1;
+
+    // create todo object with prompt's value
+    this.#todo = new Todo(this.#id, item);
+
+    // Save new todo
+    await this.saveTodo(this.#todo);
+
+    // get latest todo record
+    this.#items = await this.getTodos();
+
+    // update UI with new record
+    this._updateUI(this.#items);
+  }
 
   _renderItem(todo) {
     const html = `
@@ -169,6 +176,15 @@ class App {
   }
 
   _updateUI(arr) {
+    todoItemsContainer.innerHTML = '';
+
+    if (arr.length <= 0) {
+      return todoItemsContainer.insertAdjacentHTML(
+        'beforeend',
+        `No todo registered yet.`
+      );
+    }
+
     arr.forEach((currentEl) => this._renderItem(currentEl));
   }
 
@@ -180,14 +196,17 @@ class App {
     const target = e.target.closest('.todo__select');
     const targetID = target.getAttribute('id').split('-')[1];
 
-    // Find target object in #items array
+    // Find target object in items array
     const targettedTodo = this._findTodoById(targetID);
 
     // if target is checked, set property "checked" to true else to false
     await this.markTodo(targettedTodo._id, !targettedTodo.checked);
 
-    // Update UI with latest todo record
-    await this.getTodos();
+    // get latest todo record
+    this.#items = await this.getTodos();
+
+    // update UI with new record
+    this._updateUI(this.#items);
   }
 
   async _removeItem(e) {
@@ -212,16 +231,22 @@ class App {
     // Delete todo
     await this.deleteTodo(targettedTodo._id);
 
-    // Update UI with latest todo record
-    await this.getTodos();
+    // get latest todo record
+    this.#items = await this.getTodos();
+
+    // update UI with new record
+    this._updateUI(this.#items);
   }
 
   async _clearAll() {
     // Delete all todos from db
     await this.deleteAllTodo();
 
-    // Update UI with latest todo record
-    await this.getTodos();
+    // get latest todo record
+    this.#items = await this.getTodos();
+
+    // update UI with new record
+    this._updateUI(this.#items);
   }
 }
 

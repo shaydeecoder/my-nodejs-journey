@@ -1,10 +1,23 @@
 const fs = require('fs');
 const express = require('express');
-const { fail } = require('assert');
+const morgan = require('morgan');
 
 const app = express();
 
+// Middlewares
+app.use(morgan('dev'));
+
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 // Sending a response to the client
 /* app.get('/', (req, res) => {
@@ -30,6 +43,7 @@ const tours = JSON.parse(
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours,

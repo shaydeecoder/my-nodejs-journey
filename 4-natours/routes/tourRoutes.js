@@ -1,5 +1,6 @@
 const express = require('express');
 
+// Tours route handlers
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -85,6 +86,7 @@ const deleteTour = (req, res) => {
   });
 };
 
+// Creating a sub app
 const router = express.Router();
 
 router.route('/').get(getAllTours).post(createTour);

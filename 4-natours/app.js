@@ -41,41 +41,6 @@ const tours = JSON.parse(
 
 // Route handlers
 
-const getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
-
-const getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
-
-const createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
-
-const updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
-
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
-
 // Routes
 /* app.get('/api/v1/tours', getAllTours);
 app.get('/api/v1/tours/:id', getTour);
@@ -99,13 +64,6 @@ app
   .get(getUser)
   .patch(updateUser)
   .delete(deleteUser); */
-
-// Creating sub/mini apps and mounting multiple routes
-const userRouter = express.Router();
-
-userRouter.route('/').get(getAllUsers).post(createUser);
-
-userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 // Mounting multiple routes
 app.use('/api/v1/tours', tourRouter);

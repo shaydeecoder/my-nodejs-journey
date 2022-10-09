@@ -1,6 +1,8 @@
-const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
+
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
@@ -34,12 +36,6 @@ app.use((req, res, next) => {
 /* app.post('/', (req, res) => {
   res.send('You can post to this endpoint...');
 }); */
-
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
-
-// Route handlers
 
 // Routes
 /* app.get('/api/v1/tours', getAllTours);

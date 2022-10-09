@@ -161,14 +161,14 @@ const deleteUser = (req, res) => {
 };
 
 // Routes
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getTour);
-// app.post('/api/v1/tours', createTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
+/* app.get('/api/v1/tours', getAllTours);
+app.get('/api/v1/tours/:id', getTour);
+app.post('/api/v1/tours', createTour);
+app.patch('/api/v1/tours/:id', updateTour);
+app.delete('/api/v1/tours/:id', deleteTour); */
 
 // New refactored routes
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
+/* app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
 app
   .route('/api/v1/tours/:id')
@@ -182,7 +182,22 @@ app
   .route('/api/v1/users/:id')
   .get(getUser)
   .patch(updateUser)
-  .delete(deleteUser);
+  .delete(deleteUser); */
+
+// Mounting multiple routes
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+tourRouter.route('/').get(getAllTours).post(createTour);
+
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+
+userRouter.route('/').get(getAllUsers).post(createUser);
+
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 // Starting a server
 const port = 3000;

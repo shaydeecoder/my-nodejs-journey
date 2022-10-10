@@ -4,6 +4,9 @@ const tourController = require('./../controllers/tourController');
 // Creating a sub app
 const router = express.Router();
 
+// Param middleware
+router.param('id', tourController.checkID);
+
 router
   .route('/')
   .get(tourController.getAllTours)

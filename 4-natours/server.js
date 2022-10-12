@@ -42,6 +42,23 @@ const tourSchema = new mongoose.Schema({
 // Creating model
 const Tour = mongoose.model('Tour', tourSchema);
 
+// Creating a new tour with the model
+const testTour = new Tour({
+  name: 'The Forest Hiker',
+  rating: 4.7,
+  price: 497,
+});
+
+// Creating a document with the model
+testTour
+  .save()
+  .then((doc) => {
+    console.log(doc);
+  })
+  .catch((err) => {
+    console.log('ERROR 💥:', err);
+  });
+
 // Starting a server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

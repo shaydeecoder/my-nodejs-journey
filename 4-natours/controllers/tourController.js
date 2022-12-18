@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
+const catchAsync = require('../utils/catchAsync');
 
 // Param middleware function
 /* exports.checkID = (req, res, next, val) => {
@@ -76,8 +77,18 @@ exports.getTour = async (req, res) => {
   }
 };
 
-exports.createTour = async (req, res) => {
-  try {
+exports.createTour = catchAsync(async (req, res) => {
+  // Another way of creating a document
+  const newTour = await Tour.create(req.body);
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: newTour,
+    },
+  });
+
+  /* try {
     // const newTour = new Tour({});
     // newTour.save();
 
@@ -95,8 +106,8 @@ exports.createTour = async (req, res) => {
       status: 'fail',
       message: err,
     });
-  }
-};
+  } */
+});
 
 exports.updateTour = async (req, res) => {
   try {

@@ -2,6 +2,7 @@ const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 // Param middleware function
 /* exports.checkID = (req, res, next, val) => {
@@ -143,7 +144,8 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   // }
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
+exports.deleteTour = factory.deleteOne(Tour);
+/* exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
 
   if (!tour) {
@@ -162,7 +164,7 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
   //     message: err,
   //   });
   // }
-});
+}); */
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

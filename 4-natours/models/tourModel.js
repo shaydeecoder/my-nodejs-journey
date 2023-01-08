@@ -124,6 +124,7 @@ const tourSchema = new mongoose.Schema(
 // Single field index
 // tourSchema.index({ price: 1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // Compound index
 tourSchema.index({ price: 1, ratingsAverage: -1 });

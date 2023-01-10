@@ -190,9 +190,12 @@ tourSchema.post(/^find/, function (docs, next) {
 
 // AGGREGATION MIDDLEWARE: runs before/after an aggregation happens
 tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  const firstStage = this.pipeline()[0];
 
-  console.log(this.pipeline());
+  if (Object.keys(firstStage)[0] !== '$geoNear') {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
+
   next();
 });
 

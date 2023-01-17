@@ -1,51 +1,49 @@
 /* eslint-disable */
+export const displayMap = (locations) => {
+  mapboxgl.accessToken =
+    'pk.eyJ1Ijoic2hheWRlZWNvZGVyIiwiYSI6ImNsY3ZzNGtobDA0Zm0zcHBod2c1ZHp5aHQifQ.Y6qaKD-r5IZ2KeKvXUwx9g';
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/shaydeecoder/clcvxm8bj000b15phgbxglkee',
+    scrollZoom: false,
+    // center: [-118.113491, 34.111745],
+    // zoom: 10,
+    // interactive: false,
+  });
 
-const locations = JSON.parse(document.getElementById('map').dataset.locations);
-console.log(locations);
+  const bounds = new mapboxgl.LngLatBounds();
 
-mapboxgl.accessToken =
-  'pk.eyJ1Ijoic2hheWRlZWNvZGVyIiwiYSI6ImNsY3ZzNGtobDA0Zm0zcHBod2c1ZHp5aHQifQ.Y6qaKD-r5IZ2KeKvXUwx9g';
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/shaydeecoder/clcvxm8bj000b15phgbxglkee',
-  scrollZoom: false,
-  // center: [-118.113491, 34.111745],
-  // zoom: 10,
-  // interactive: false,
-});
+  locations.forEach((loc) => {
+    // Create marker
+    const el = document.createElement('div');
+    el.className = 'marker';
 
-const bounds = new mapboxgl.LngLatBounds();
+    // Add marker
+    new mapboxgl.Marker({
+      element: el,
+      anchor: 'bottom',
+    })
+      .setLngLat(loc.coordinates)
+      .addTo(map);
 
-locations.forEach((loc) => {
-  // Create marker
-  const el = document.createElement('div');
-  el.className = 'marker';
+    // Add popup
+    new mapboxgl.Popup({
+      offset: 30,
+    })
+      .setLngLat(loc.coordinates)
+      .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+      .addTo(map);
 
-  // Add marker
-  new mapboxgl.Marker({
-    element: el,
-    anchor: 'bottom',
-  })
-    .setLngLat(loc.coordinates)
-    .addTo(map);
+    // Extends map bounds to include current location
+    bounds.extend(loc.coordinates);
+  });
 
-  // Add popup
-  new mapboxgl.Popup({
-    offset: 30,
-  })
-    .setLngLat(loc.coordinates)
-    .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
-    .addTo(map);
-
-  // Extends map bounds to include current location
-  bounds.extend(loc.coordinates);
-});
-
-map.fitBounds(bounds, {
-  padding: {
-    top: 200,
-    bottom: 150,
-    left: 100,
-    right: 100,
-  },
-});
+  map.fitBounds(bounds, {
+    padding: {
+      top: 200,
+      bottom: 150,
+      left: 100,
+      right: 100,
+    },
+  });
+};

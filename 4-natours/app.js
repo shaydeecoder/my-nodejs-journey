@@ -71,7 +71,7 @@ app.use(
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   // console.log('req headers', req.headers);
-  console.log('Cookies:', req.cookies);
+  // console.log('Cookies:', req.cookies);
   next();
 });
 
